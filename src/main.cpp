@@ -16,7 +16,6 @@ using namespace std;
 int main(int argc, char** argv) {
 	
 	/*mpi handlers*/
-	int zz_test_branch = 1;
 	int my_rank; //processor ID
 	int nb_proc; //number of processors
 	time_t start_time;
