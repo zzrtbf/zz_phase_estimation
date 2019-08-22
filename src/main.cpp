@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
 	MPI_Status status;
 	int tag = 1;
 	int* can_per_proc; //array containing the number of candidate solutions on each of the processors
-
+    
 	/*variables for the problem*/
 	int numvar; //number of variables to be optimized
 	double* solution; //array for containing the solution
@@ -40,6 +40,7 @@ int main(int argc, char** argv) {
 	double t_goal; //the acceptable level of error: in this case, it is the confidence interval
 	string output_filename, time_filename, optimization;
 	char const* config_filename;
+
 	/*reading the parameters from io*/
 	if (argc > 1) {
 		config_filename = argv[1];
@@ -67,6 +68,7 @@ int main(int argc, char** argv) {
 	soln_fit = new double[pop_size]; //an array to store global fitness from each candidate.
 	solution = new double[N_end]; //an array to store solution
 
+	//build memory_fitarray
 	int memory_fitarray_size = N_end - data_start + 1;
 	double** memory_fitarray = new double* [memory_fitarray_size];
 	for (int i = 0; i < memory_fitarray_size; i++)
@@ -252,6 +254,9 @@ int main(int argc, char** argv) {
 	if (my_rank == 0) {
 		cout << "done" << endl;
 	}
+
+	//pause before exit
+	cin.get();
 
 	return 0;
 }
