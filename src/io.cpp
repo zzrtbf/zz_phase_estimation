@@ -51,10 +51,10 @@ void output_result( int num, /*!< Number of variables in a policy.*/
 
     }
 
-void output_result(int num, double final_fit, double *solution,
-                   time_t start_time,
-                   char const *output_filename,
-                   char const *time_filename);
+//void output_result(int num, double final_fit, double *solution,
+//                   time_t start_time,
+//                   char const *output_filename,
+//                   char const *time_filename);
 
 map<string, string> parse(ifstream & cfgfile) {
     map<string, string> options;

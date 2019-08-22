@@ -14,7 +14,7 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-	
+
 	/*mpi handlers*/
 	int my_rank; //processor ID
 	int nb_proc; //number of processors
@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
 	MPI_Status status;
 	int tag = 1;
 	int* can_per_proc; //array containing the number of candidate solutions on each of the processors
-    
+
 	/*variables for the problem*/
 	int numvar; //number of variables to be optimized
 	double* solution; //array for containing the solution
@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
 	read_config_file(config_filename, &pop_size, &N_begin, &N_cut, &N_end, &iter,
 		&iter_begin, &repeat, &seed, &output_filename,
 		&time_filename, &optimization, &prev_dev, &new_dev, &t_goal, &data_end);
-
+	
 	prev_dev = prev_dev * M_PI;
 	new_dev = new_dev * M_PI;
 
@@ -93,14 +93,24 @@ int main(int argc, char** argv) {
 		can_per_proc[p % nb_proc] += 1;
 	}
 
-
 	if (my_rank == 0) {
 		output_header(output_filename.c_str(), time_filename.c_str());
 	}
 
 	numvar = N_begin;
+
 	/*beginning the optimization algorithm*/
+	if (my_rank == 0)
+		cout << "beginning the optimization algorithm" << endl << endl;
+	
 	do {
+		/*Check variances before every loop*/
+		if (my_rank == 0)
+		{
+			cout << "Check variances before every loop:" << endl;
+			cout << "numvar: " << numvar << endl;
+		}
+
 		t = 0;
 
 		//instantiate the particular problem using pointer from Problem class
@@ -123,6 +133,8 @@ int main(int argc, char** argv) {
 		else {
 			throw runtime_error("Unknown optimization algorithm");
 		}
+		if (my_rank == 0)
+			cout << "after instantiate problem and algorithm the numvar is: " << numvar << endl;
 
 		fitarray = new double[problem->num_fit];
 
@@ -159,6 +171,8 @@ int main(int argc, char** argv) {
 				terminate();
 			}
 		}
+		if (my_rank == 0)
+			cout << "after initialize population the numvar is: " << numvar << endl;
 
 		//Copy the candidates that are initialized to personal best
 		opt->put_to_best();
@@ -190,6 +204,9 @@ int main(int argc, char** argv) {
 			}
 			T = iter;
 		}
+		if (my_rank == 0)
+			cout << "after set success criterion the numvar is: " << numvar << endl;
+
 		/*Start iterative optimization*/
 		do {
 			++t;
@@ -207,6 +224,9 @@ int main(int argc, char** argv) {
 
 		//repeat calculation of fitness value to find the best one in the population
 		final_fit = opt->avg_Final_select(solution, repeat, soln_fit, fitarray);
+
+		if (my_rank == 0)
+			cout << "after iterative optimization the numvar is: " << numvar << endl;
 
 		if (my_rank == 0) {
 			//if the policy is of the correct type output the solution
@@ -239,6 +259,14 @@ int main(int argc, char** argv) {
 		delete problem;
 
 		++numvar;
+		++numvar;
+
+		if (my_rank == 0)
+		{
+			cout << "Check variances after every loop:" << endl;
+			cout << "numvar: " << numvar << endl << endl;
+		}
+
 	} while (numvar <= N_end);
 
 	delete gaussian_rng;
