@@ -208,7 +208,7 @@ void PSO::combination() {
 			}
 			else {}
 		}
-		this->prob->boundary(new_pos);
+		this->prob->boundary(new_pos); //keep the solution within the boundary of the search space
 		this->pop[p].update_cont(new_pos);
 		this->pop[p].update_vel(vel);
 		this->Cont_fitness(p);

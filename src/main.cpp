@@ -101,7 +101,7 @@ int main(int argc, char** argv) {
 
 	/*beginning the optimization algorithm*/
 	if (my_rank == 0)
-		cout << "beginning the optimization algorithm" << endl << endl;
+		cout << "Beginning the optimization algorithm" << endl << endl;
 	
 	do {
 		/*Check variances before every loop*/
@@ -109,6 +109,7 @@ int main(int argc, char** argv) {
 		{
 			cout << "Check variances before every loop:" << endl;
 			cout << "numvar: " << numvar << endl;
+			cout << "random number: " << rand() << endl;
 		}
 
 		t = 0;
@@ -258,7 +259,6 @@ int main(int argc, char** argv) {
 		delete opt;
 		delete problem;
 
-		++numvar;
 		++numvar;
 
 		if (my_rank == 0)

@@ -97,7 +97,9 @@ void OptAlg::Best_fitness(int p)
 
 	double* fit = new double[num_fit];
 
+	// calculate the fitness value of a solution
 	prob->avg_fitness(pop[p].can_best, prob->num_repeat, fit);
+	// this method can calculate and update the mean of best fitness values in real time.
 	pop[p].write_bestfit(fit);
 
 	delete[] fit;
@@ -106,6 +108,8 @@ void OptAlg::Best_fitness(int p)
 void OptAlg::update_popfit() {
 	/*! The mean fitness values of the population on a processor are updated.
 	*/
+	// ????? Does the pop_size is the can_per_proc or the total pop_size?  ?????//
+	// ????? Tend to check the MPI variances ?????//
 	for (int p = 0; p < pop_size; ++p) {
 		Best_fitness(p);
 	}

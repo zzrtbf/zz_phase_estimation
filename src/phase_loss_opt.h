@@ -191,9 +191,9 @@ void Phase::avg_fitness(double* soln, const int K, double* fitarray) {
 			}
 			else {
 				//PHI_in = rand_Gaussian(PHI, THETA_DEV); //select if the noise is normally distributed.
-		//PHI_in = rand_Hat(PHI, THETA_DEV); //select if the noise is distributed as a Hat function.
-		//PHI_in = Lognormal(MU,THETA,PHI); //select if the noise is distributed as a lognormal function.
-		//PHI_in = rand_RTN(PHI,Ps,THETA_DEV);//select if the noise is random telegraph.
+				//PHI_in = rand_Hat(PHI, THETA_DEV); //select if the noise is distributed as a Hat function.
+				//PHI_in = Lognormal(MU,THETA,PHI); //select if the noise is distributed as a lognormal function.
+				//PHI_in = rand_RTN(PHI,Ps,THETA_DEV);//select if the noise is random telegraph.
 				PHI_in = rand_skewed(PHI, THETA_DEV, RATIO); //select if the noise is skewed normal.
 				PHI_in = mod_2PI(PHI_in);//noisy PHI
 				dect_result = noise_outcome(phi, PHI_in, num - m);
