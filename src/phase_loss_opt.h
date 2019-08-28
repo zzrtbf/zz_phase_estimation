@@ -225,7 +225,7 @@ bool Phase::T_condition(double* fitarray, int* numvar, int N_cut, bool* mem_ptyp
 	bool type;
 
 	//The conditions are checked only if the algorithm is going to change the way it initializes the population.
-	//Policy type 1 is the one with pi bias and is susceptible to loss. CThe algorithm will run until type 0 is found.
+	//Policy type 1 is the one with pi bias and is susceptible to loss. The algorithm will run until type 0 is found.
 	if (*numvar == N_cut - 1) {
 		try {
 			type = check_policy(fitarray[1], fitarray[0]);

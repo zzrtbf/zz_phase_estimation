@@ -21,11 +21,13 @@ void PSO::find_global() {
 	* and ask for the rest of the information.
 	*/
 	MPI_Status status;
-	int tag = 1;
-	int ptr, prev, forw;
+	int tag = 1;	// tag used for MPI comm
+	// ptr. Best candidate among three.
+	// prev, forw. The left and right candidate of the now candidate 
+	int ptr, prev, forw;	 
 	double prev_fit, forw_fit, fit;
-	double* fitarray = new double[this->prob->num_fit];
-	double* array = new double[this->num];
+	double* fitarray = new double[this->prob->num_fit];	
+	double* array = new double[this->num];	// soln
 
 	for (int p = 0; p < total_pop; ++p)
 	{
@@ -34,19 +36,23 @@ void PSO::find_global() {
 		find_index(&prev, &forw, p);
 
 		//neighbor send fitness to the processor that contains candidate p
+		// if I am prev, send fit to p
 		if (my_rank == prev % nb_proc) {
 			prev_fit = this->pop[prev / nb_proc].read_bestfit(0);
 			MPI_Send(&prev_fit, 1, MPI_DOUBLE, p % nb_proc, tag, MPI_COMM_WORLD);
 		}
+		// if I am p, send fit to prev
 		else if (my_rank == p % nb_proc) {
 			MPI_Recv(&prev_fit, 1, MPI_DOUBLE, prev % nb_proc, tag, MPI_COMM_WORLD, &status);
 		}
 		else {}
 
+		// if I am forw, send fit to p
 		if (my_rank == forw % nb_proc) {
 			forw_fit = this->pop[forw / nb_proc].read_bestfit(0);
 			MPI_Send(&forw_fit, 1, MPI_DOUBLE, p % nb_proc, tag, MPI_COMM_WORLD);
 		}
+		// if I am p, send fit to forw
 		else if (my_rank == p % nb_proc) {
 			MPI_Recv(&forw_fit, 1, MPI_DOUBLE, forw % nb_proc, tag, MPI_COMM_WORLD, &status);
 		}
@@ -55,6 +61,7 @@ void PSO::find_global() {
 		MPI_Barrier(MPI_COMM_WORLD);
 
 		//compare fitness at the processor and store the candidate with best fitness in ptr
+		// And send the best fitness to prev and forw
 		if (my_rank == p % nb_proc) {
 			fit = this->pop[p / nb_proc].read_bestfit(0); //read fitness of p
 			ptr = find_fitness(prev, prev_fit, forw, forw_fit, p, fit);
@@ -208,10 +215,10 @@ void PSO::combination() {
 			}
 			else {}
 		}
-		this->prob->boundary(new_pos); //keep the solution within the boundary of the search space
-		this->pop[p].update_cont(new_pos);
-		this->pop[p].update_vel(vel);
-		this->Cont_fitness(p);
+		this->prob->boundary(new_pos);	//keep the solution within the boundary of the search space
+		this->pop[p].update_cont(new_pos);	// update the new position
+		this->pop[p].update_vel(vel);	//update the new velocity
+		this->Cont_fitness(p);	// update the new fitness value
 	}
 
 	delete[] global_pos;

@@ -102,15 +102,9 @@ int main(int argc, char** argv) {
 	/*beginning the optimization algorithm*/
 	if (my_rank == 0)
 		cout << "Beginning the optimization algorithm" << endl << endl;
-	
+	int j = 0;
+
 	do {
-		/*Check variances before every loop*/
-		if (my_rank == 0)
-		{
-			cout << "Check variances before every loop:" << endl;
-			cout << "numvar: " << numvar << endl;
-			cout << "random number: " << rand() << endl;
-		}
 
 		t = 0;
 
@@ -134,8 +128,6 @@ int main(int argc, char** argv) {
 		else {
 			throw runtime_error("Unknown optimization algorithm");
 		}
-		if (my_rank == 0)
-			cout << "after instantiate problem and algorithm the numvar is: " << numvar << endl;
 
 		fitarray = new double[problem->num_fit];
 
@@ -172,8 +164,6 @@ int main(int argc, char** argv) {
 				terminate();
 			}
 		}
-		if (my_rank == 0)
-			cout << "after initialize population the numvar is: " << numvar << endl;
 
 		//Copy the candidates that are initialized to personal best
 		opt->put_to_best();
@@ -205,29 +195,52 @@ int main(int argc, char** argv) {
 			}
 			T = iter;
 		}
-		if (my_rank == 0)
-			cout << "after set success criterion the numvar is: " << numvar << endl;
 
 		/*Start iterative optimization*/
+		if (my_rank == 0)
+			cout << "Start iterative optimization  " << "numvar: " << numvar << endl;
 		do {
 			++t;
-
+			if (my_rank == 0)
+			{
+				if (t % 20 == 0)
+					cout << "Iterating...   t: " << t << endl;
+			}
 			opt->update_popfit(); //recalculated the fitness values and update the mean of the fitness values for the population
-			opt->combination(); //create contenders(offsprings). This is where a lot of comm goes on between processors
+			opt->combination(); //create contenders(offsprings). This is where a lot of comm goes on between processors (zz don't think so)   
 			opt->selection(); //select candidates or contenders for the next step
 
 			final_fit = opt->Final_select(soln_fit, solution, fitarray); //communicate to find the best solution that exist so far
 
+			
 			//check if optimization is successful. This function includes accept-reject criteria.
 			opt->success = opt->check_success(t, fitarray, &memory_fitarray[0][0], data_size, t_goal, mem_ptype, &numvar, N_cut, memory_forT);
-
 		} while (opt->success == 0);
 
 		//repeat calculation of fitness value to find the best one in the population
 		final_fit = opt->avg_Final_select(solution, repeat, soln_fit, fitarray);
-
 		if (my_rank == 0)
-			cout << "after iterative optimization the numvar is: " << numvar << endl;
+			cout << "Iteration done!" << endl;
+
+		// Print results after every iterative optimization
+		if (my_rank == 0)
+		{
+			// print numvar, solution, fitarray
+			cout << "The result of optimization: " << endl;
+			cout << "numvar: " << numvar << endl;
+			cout << "solution:  ";
+			for (j = 0; j < numvar; j++)
+			{
+				cout << solution[j] << '\t';
+			}
+			cout << endl;
+			cout << "fitarray:  ";
+			for (j = 0; j < problem->num_fit; j++)
+			{
+				cout << fitarray[j] << '\t';
+			}
+			cout << endl;
+		}
 
 		if (my_rank == 0) {
 			//if the policy is of the correct type output the solution
@@ -260,12 +273,6 @@ int main(int argc, char** argv) {
 		delete problem;
 
 		++numvar;
-
-		if (my_rank == 0)
-		{
-			cout << "Check variances after every loop:" << endl;
-			cout << "numvar: " << numvar << endl << endl;
-		}
 
 	} while (numvar <= N_end);
 

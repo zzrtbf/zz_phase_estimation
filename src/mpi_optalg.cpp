@@ -120,7 +120,7 @@ double OptAlg::Final_select(double* fit, double* solution, double* fitarray) {
 	/*! The fitness values are sent to the zeroth processor, where the candidate with the highest fitness value.
 	* A copy of that candidate to other processors.
 	*/
-	int indx;
+	int indx;	// The index of candidate
 	MPI_Status status;
 	int tag = 1;
 	double global_fit;
