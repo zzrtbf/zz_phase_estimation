@@ -101,8 +101,12 @@ int main(int argc, char** argv) {
 
 	/*beginning the optimization algorithm*/
 	if (my_rank == 0)
+	{
+		cout << endl;
 		cout << "Beginning the optimization algorithm" << endl << endl;
-	int j = 0;
+	}
+		
+	int j = 0;	// just used for print message
 
 	do {
 
@@ -198,7 +202,7 @@ int main(int argc, char** argv) {
 
 		/*Start iterative optimization*/
 		if (my_rank == 0)
-			cout << "Start iterative optimization  " << "numvar: " << numvar << endl;
+			cout << "Start iterative optimization.  " << "numvar: " << numvar << endl;
 		do {
 			++t;
 			if (my_rank == 0)
@@ -217,10 +221,10 @@ int main(int argc, char** argv) {
 			opt->success = opt->check_success(t, fitarray, &memory_fitarray[0][0], data_size, t_goal, mem_ptype, &numvar, N_cut, memory_forT);
 		} while (opt->success == 0);
 
+		if (my_rank == 0)
+			cout << "Iteration done" << endl;
 		//repeat calculation of fitness value to find the best one in the population
 		final_fit = opt->avg_Final_select(solution, repeat, soln_fit, fitarray);
-		if (my_rank == 0)
-			cout << "Iteration done!" << endl;
 
 		// Print results after every iterative optimization
 		if (my_rank == 0)
@@ -261,13 +265,15 @@ int main(int argc, char** argv) {
 		}
 		else {}
 
-		//testing how the solution perform under lossy condition
-		if (my_rank == 0) {
-			problem->fitness(solution, fitarray);
-			//final_fit = fitarray[0];
-			cout << numvar << "\t" << fitarray[0] << "\t" << fitarray[1] << endl;
-		}
-
+		////testing how the solution perform under lossy condition
+		//if (my_rank == 0) {
+		//	problem->fitness(solution, fitarray);
+		//	//final_fit = fitarray[0];
+		//	cout << numvar << "\t" << fitarray[0] << "\t" << fitarray[1] << endl;
+		//}
+		if (my_rank == 0)
+			cout << endl << endl;
+		
 		/*delete the objects for algorithm and problem to free memory*/
 		delete opt;
 		delete problem;

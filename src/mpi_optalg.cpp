@@ -1,4 +1,5 @@
 #include "mpi_optalg.h"
+#include <iostream>
 
 /*##############################Function for initializing population##############################*/
 
@@ -219,7 +220,7 @@ double OptAlg::avg_Final_select(double* solution, int repeat, double* soln_fit, 
 
 	double* array = new double[num];
 	double** fit = new double* [pop_size];
-	for (int i=0; i < pop_size; i++)
+	for (int i = 0; i < pop_size; i++)
 		fit[i] = new double[num_fit];
 
 	//double fitarray[num_fit];
@@ -287,7 +288,18 @@ double OptAlg::avg_Final_select(double* solution, int repeat, double* soln_fit, 
 	//get solution from the processor
 	if (my_rank == indx % nb_proc) {
 		//pop[indx / nb_proc].read_global(array);
-		MPI_Send(pop[indx / nb_proc].global_best, num, MPI_DOUBLE, 0, tag, MPI_COMM_WORLD);
+		// if indx is in root, don't need to send.
+		if (my_rank == 0)
+		{
+			for (int i = 0; i < num; i++)
+			{
+				solution[i] = pop[indx / nb_proc].global_best[i];
+			}
+		}
+		// if indx is in other proccessor, send soln to root.
+		else
+			MPI_Send(pop[indx / nb_proc].global_best, num, MPI_DOUBLE, 0, tag, MPI_COMM_WORLD);
+		
 	}
 	else if (my_rank == 0) {
 		MPI_Recv(&solution[0], num, MPI_DOUBLE, indx % nb_proc, tag, MPI_COMM_WORLD, &status);
@@ -298,7 +310,17 @@ double OptAlg::avg_Final_select(double* solution, int repeat, double* soln_fit, 
 
 	//get fitarray from the processor
 	if (my_rank == indx % nb_proc) {
-		MPI_Send(&fit[indx / nb_proc][1], 1, MPI_DOUBLE, 0, tag, MPI_COMM_WORLD);
+		// if indx in root, don't need to send.
+		if (indx % nb_proc == 0)
+		{		
+			fitarray[0] = final_fit;
+			fitarray[1] = fit[indx / nb_proc][1];
+		}
+		// if indx is in other proccessor, send fitness to root.
+		else
+		{
+			MPI_Send(&fit[indx / nb_proc][1], 1, MPI_DOUBLE, 0, tag, MPI_COMM_WORLD);
+		}
 	}
 	else if (my_rank == 0) {
 		fitarray[0] = final_fit;
@@ -311,6 +333,8 @@ double OptAlg::avg_Final_select(double* solution, int repeat, double* soln_fit, 
 		delete[] fit[i];
 	delete[] fit;
 
+	if (my_rank == 0)
+		cout << "final_fit found" << endl;
 	return final_fit;
 }
 
