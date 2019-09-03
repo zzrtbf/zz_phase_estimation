@@ -11,6 +11,8 @@ void output_result(int num, int num_fit, double *final_fit, double *solution,
                    time_t start_time, char const *output_filename,
                    char const *time_filename); /*!<This function print the sharpness, policy, and time for N.*/
 
+void output_run_data(const char* str, char const* run_data_dile_name); // output run data
+
 void read_config_file(char const *filename, int *pop_size, int *N_begin,
                       int *N_cut, int *N_end, int *iter, int *iter_begin,
                       int *repeat, int *seed, string *output_filename,

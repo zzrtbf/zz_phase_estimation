@@ -103,9 +103,9 @@ int main(int argc, char** argv) {
 	if (my_rank == 0)
 	{
 		cout << endl;
-		cout << "Beginning the optimization algorithm" << endl << endl;
+		cout << "Beginning the optimization algorithms" << endl;
 	}
-		
+	
 	int j = 0;	// just used for print message
 
 	do {
@@ -207,7 +207,7 @@ int main(int argc, char** argv) {
 			++t;
 			if (my_rank == 0)
 			{
-				if (t % 20 == 0)
+				if (t % 100 == 0)
 					cout << "Iterating...   t: " << t << endl;
 			}
 			opt->update_popfit(); //recalculated the fitness values and update the mean of the fitness values for the population
@@ -229,23 +229,33 @@ int main(int argc, char** argv) {
 		// Print results after every iterative optimization
 		if (my_rank == 0)
 		{
-			// print numvar, solution, fitarray
-			cout << "The result of optimization: " << endl;
-			cout << "numvar: " << numvar << endl;
-			cout << "solution:  ";
-			for (j = 0; j < numvar; j++)
+			if (numvar > 3)
 			{
-				cout << solution[j] << '\t';
+				// print numvar, solution, fitarray
+				cout << "The result of optimization: " << endl;
+				cout << "numvar: " << numvar << endl;
+				cout << "solution:  ";
+				for (j = 0; j < numvar; j++)
+				{
+					cout << solution[j] << '\t';
+				}
+				cout << endl;
+				cout << "fitarray:  ";
+				for (j = 0; j < problem->num_fit; j++)
+				{
+					cout << fitarray[j] << '\t';
+				}
+				cout << endl;
 			}
-			cout << endl;
-			cout << "fitarray:  ";
-			for (j = 0; j < problem->num_fit; j++)
-			{
-				cout << fitarray[j] << '\t';
-			}
-			cout << endl;
 		}
 
+		// save results to the test file
+		if (my_rank == 0)
+		{
+
+		}
+
+		// save results to the final file
 		if (my_rank == 0) {
 			//if the policy is of the correct type output the solution
 			if ((numvar >= N_begin) && (!mem_ptype[0] && !mem_ptype[1])) {

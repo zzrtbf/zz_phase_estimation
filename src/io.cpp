@@ -51,6 +51,15 @@ void output_result( int num, /*!< Number of variables in a policy.*/
 
     }
 
+void output_run_data(const char* str, char const* run_data_file_name)
+{
+	ofstream run_data_file;
+	run_data_file.open(run_data_file_name, ios::app);
+	run_data_file << str;
+	run_data_file.close();
+	cout << str;
+}
+
 //void output_result(int num, double final_fit, double *solution,
 //                   time_t start_time,
 //                   char const *output_filename,
@@ -95,22 +104,42 @@ void read_config_file(  char const *filename, /*!< File that contains program pa
     the number of variable to begin using accept/reject criterion: *data_end
     */
     // Setting defaults
-    *pop_size = 12;
-    *N_begin = 4;
-    *N_cut = 5;
-    *N_end = 10;
-    *iter = 100;
-    *iter_begin = 300;
-    *repeat = 10;
-    *seed = time(NULL);
-    *output_filename = "output.dat";
-    *time_filename = "time.dat";
-    *optimization = "pso";
+	
+	// Origin setting
+    //*pop_size = 12;
+    //*N_begin = 4;
+    //*N_cut = 5;
+    //*N_end = 10;
+    //*iter = 100;
+    //*iter_begin = 300;
+    //*repeat = 10;
+    //*seed = time(NULL);
+    //*output_filename = "output.dat";
+    //*time_filename = "time.dat";
+    //*optimization = "pso";
 
-    *data_end = 8;
-    *prev_dev = 0.01;
-    *new_dev = 0.25;
-    *t_goal = 0.98; //probability for calculating quantile
+    //*data_end = 8;
+    //*prev_dev = 0.01;
+    //*new_dev = 0.25;
+    //*t_goal = 0.98; //probability for calculating quantile
+	
+	// zz test setting
+	*pop_size = 12;
+	*N_begin = 4;
+	*N_cut = 5;
+	*N_end = 10;
+	*iter = 200;
+	*iter_begin = 300;
+	*repeat = 10;
+	*seed = time(NULL);
+	*output_filename = "output.dat";
+	*time_filename = "time.dat";
+	*optimization = "pso";
+
+	*data_end = 8;
+	*prev_dev = 0.01;
+	*new_dev = 0.25;
+	*t_goal = 0.98; //probability for calculating quantile
 
     // Parsing config file if there is one
     if (filename == NULL) return;

@@ -333,8 +333,6 @@ double OptAlg::avg_Final_select(double* solution, int repeat, double* soln_fit, 
 		delete[] fit[i];
 	delete[] fit;
 
-	if (my_rank == 0)
-		cout << "final_fit found" << endl;
 	return final_fit;
 }
 
