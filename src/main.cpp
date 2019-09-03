@@ -103,6 +103,7 @@ int main(int argc, char** argv) {
 	if (my_rank == 0)
 	{
 		cout << endl;
+		cout << "A new experiment." << endl;
 		cout << "Beginning the optimization algorithms" << endl;
 	}
 	
