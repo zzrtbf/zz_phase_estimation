@@ -187,6 +187,7 @@ void Phase::avg_fitness(double* soln, const int K, double* fitarray) {
 			coin = uniform_rng->next_rand(0.0, 1.0);
 
 			if (coin <= loss) {
+				//////////
 				state_loss(num - m); //update only the state using loss function
 			}
 			else {
