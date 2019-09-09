@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "defines": [
+                "_DEBUG",
+                "UTF8",
+                "__GNUC__=7",
+                "__cdecl=__attribute__((__cdecl__))"
+            ],
+            "compilerPath": "C:/Program Files/mingw-w64/x86_64-8.1.0-win32-seh-rt_v6-rev0/mingw64/bin/g++.exe",
+            "intelliSenseMode": "gcc-x64",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}"
+                ]
+            },
+            "includePath": [
+                "${workspaceFolder}"
+            ]
+        }
+    ],
+    "version": 4
+}

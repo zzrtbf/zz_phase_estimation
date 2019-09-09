@@ -217,7 +217,7 @@ int main(int argc, char** argv) {
 
 			final_fit = opt->Final_select(soln_fit, solution, fitarray); //communicate to find the best solution that exist so far
 
-			
+
 			//check if optimization is successful. This function includes accept-reject criteria.
 			opt->success = opt->check_success(t, fitarray, &memory_fitarray[0][0], data_size, t_goal, mem_ptype, &numvar, N_cut, memory_forT);
 		} while (opt->success == 0);
