@@ -42,7 +42,7 @@ void output_result( int num, /*!< Number of variables in a policy.*/
     for(i = 0; i < num; ++i) {
         output_file << solution[i] << "\t";
         }
-    output_file << endl;
+	output_file << endl;
     output_file.close();
 
     time_file.open(time_filename, ios::app);
@@ -128,7 +128,7 @@ void read_config_file(  char const *filename, /*!< File that contains program pa
 	*N_begin = 4;
 	*N_cut = 5;
 	*N_end = 10;
-	*iter = 200;
+	*iter = 100;
 	*iter_begin = 300;
 	*repeat = 10;
 	*seed = time(NULL);

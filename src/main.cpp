@@ -102,12 +102,12 @@ int main(int argc, char** argv) {
 	/*beginning the optimization algorithm*/
 	if (my_rank == 0)
 	{
-		cout << endl;
-		cout << "A new experiment." << endl;
-		cout << "Beginning the optimization algorithms" << endl;
+		cout << "A new experiment." << endl << endl;
+		cout << "Beginning the optimization algorithms" << endl << endl;
 	}
 	
 	int j = 0;	// just used for print message
+	int experiment_time = 1;	// The number of experiments.
 
 	do {
 
@@ -203,14 +203,13 @@ int main(int argc, char** argv) {
 
 		/*Start iterative optimization*/
 		if (my_rank == 0)
-			cout << "Start iterative optimization.  " << "numvar: " << numvar << endl;
+		{
+			cout << "Start iterative... " << "numvar: " << numvar;
+			cout << " Times: " << experiment_time << endl;
+		}
+			
 		do {
 			++t;
-			if (my_rank == 0)
-			{
-				if (t % 100 == 0)
-					cout << "Iterating...   t: " << t << endl;
-			}
 			opt->update_popfit(); //recalculated the fitness values and update the mean of the fitness values for the population
 			opt->combination(); //create contenders(offsprings). This is where a lot of comm goes on between processors (zz don't think so)   
 			opt->selection(); //select candidates or contenders for the next step
@@ -222,18 +221,19 @@ int main(int argc, char** argv) {
 			opt->success = opt->check_success(t, fitarray, &memory_fitarray[0][0], data_size, t_goal, mem_ptype, &numvar, N_cut, memory_forT);
 		} while (opt->success == 0);
 
-		if (my_rank == 0)
-			cout << "Iteration done" << endl;
 		//repeat calculation of fitness value to find the best one in the population
 		final_fit = opt->avg_Final_select(solution, repeat, soln_fit, fitarray);
 
-		// Print results after every iterative optimization
-		if (my_rank == 0)
-		{
-			if (numvar > 3)
-			{
-				// print numvar, solution, fitarray
-				cout << "The result of optimization: " << endl;
+		// save results to the final file
+		if (my_rank == 0) {
+			//if the policy is of the correct type output the solution
+			if ((numvar >= N_begin) && (!mem_ptype[0] && !mem_ptype[1])) {
+				//		if ((numvar >= N_begin)) {
+				output_result(numvar, problem->num_fit, fitarray, solution, start_time,
+					output_filename.c_str(), time_filename.c_str());
+
+				// output good solution
+				cout << "The good result of optimization: " << endl;
 				cout << "numvar: " << numvar << endl;
 				cout << "solution:  ";
 				for (j = 0; j < numvar; j++)
@@ -247,22 +247,20 @@ int main(int argc, char** argv) {
 					cout << fitarray[j] << '\t';
 				}
 				cout << endl;
+
+				//testing how the solution perform under lossy condition
+				if (my_rank == 0) {
+					problem->fitness(solution, fitarray);
+					//final_fit = fitarray[0];
+					cout << numvar << "\t" << fitarray[0] << "\t" << fitarray[1] << endl;
+				}
+				experiment_time = 1;
 			}
-		}
-
-		// save results to the test file
-		if (my_rank == 0)
-		{
-
-		}
-
-		// save results to the final file
-		if (my_rank == 0) {
-			//if the policy is of the correct type output the solution
-			if ((numvar >= N_begin) && (!mem_ptype[0] && !mem_ptype[1])) {
-				//		if ((numvar >= N_begin)) {
-				output_result(numvar, problem->num_fit, fitarray, solution, start_time,
-					output_filename.c_str(), time_filename.c_str());
+			else
+			{
+				// The solution is bad.
+				cout << "Bad solution." << endl;
+				experiment_time++;
 			}
 		}
 
@@ -282,8 +280,6 @@ int main(int argc, char** argv) {
 		//	//final_fit = fitarray[0];
 		//	cout << numvar << "\t" << fitarray[0] << "\t" << fitarray[1] << endl;
 		//}
-		if (my_rank == 0)
-			cout << endl << endl;
 		
 		/*delete the objects for algorithm and problem to free memory*/
 		delete opt;
