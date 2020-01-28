@@ -173,7 +173,7 @@ void PSO::put_to_best() {
 	find_global();
 
 	delete[] array;
-
+	 
 }
 
 void PSO::selection() {

@@ -207,7 +207,7 @@ int main(int argc, char** argv) {
 			cout << "Start iterative... " << "numvar: " << numvar;
 			cout << " Times: " << experiment_time << endl;
 		}
-			
+
 		do {
 			++t;
 			opt->update_popfit(); //recalculated the fitness values and update the mean of the fitness values for the population
@@ -259,8 +259,11 @@ int main(int argc, char** argv) {
 			else
 			{
 				// The solution is bad.
-				cout << "Bad solution." << endl;
+				cout << "Bad solution.  " << mem_ptype[0] << mem_ptype[1] << endl;
 				experiment_time++;
+				// mem_ptype = {0, 0} before every iterative
+				mem_ptype[0] = 0;
+				mem_ptype[1] = 0;
 			}
 		}
 

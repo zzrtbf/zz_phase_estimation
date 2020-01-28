@@ -81,7 +81,7 @@ class OptAlg {
         int my_rank; /*!< Variable for MPI*/
         int nb_proc;/*!< Variables for MPI*/
 
-    };
+};
 
 /*! \brief DE class contains the functions that are specific to this particular optimization algorithm.*/
 
