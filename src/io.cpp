@@ -15,10 +15,10 @@ void output_header( char const *output_filename, /*!<Pointer to output file wher
     ofstream time_file;
 
     output_file.open(output_filename, ios::app);
-    output_file << "#N \t Sharpness \t Mean \t Policy" << endl;
+    output_file << "#N\tSharpness\tMean\t\tPolicy" << endl;
     output_file.close();
     time_file.open(time_filename, ios::app);
-    time_file << "#N \t Time" << endl;
+    time_file << "#N\tTime" << endl;
     time_file.close();
     }
 
@@ -134,7 +134,7 @@ void read_config_file(  char const *filename, /*!< File that contains program pa
 	*seed = time(NULL);
 	*output_filename = "output.dat";
 	*time_filename = "time.dat";
-	*optimization = "pso";
+	*optimization = "de";
 
 	*data_end = 8;
 	*prev_dev = 0.01;

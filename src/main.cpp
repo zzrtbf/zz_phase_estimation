@@ -211,14 +211,26 @@ int main(int argc, char** argv) {
 		do {
 			++t;
 			opt->update_popfit(); //recalculated the fitness values and update the mean of the fitness values for the population
-			opt->combination(); //create contenders(offsprings). This is where a lot of comm goes on between processors (zz don't think so)   
+			/*if (my_rank == 0)
+				cout << "update_popfit finished" << endl;*/
+
+			opt->combination(); //create contenders(offsprings). This is where a lot of comm goes on between processors  
+			/*if (my_rank == 0)
+				cout << "combination finished" << endl;*/
+
 			opt->selection(); //select candidates or contenders for the next step
+			/*if (my_rank == 0)
+				cout << "selection finished" << endl;*/
 
 			final_fit = opt->Final_select(soln_fit, solution, fitarray); //communicate to find the best solution that exist so far
-
+			/*if (my_rank == 0)
+				cout << "Final_select finished" << endl;*/
 
 			//check if optimization is successful. This function includes accept-reject criteria.
 			opt->success = opt->check_success(t, fitarray, &memory_fitarray[0][0], data_size, t_goal, mem_ptype, &numvar, N_cut, memory_forT);
+			/*if (my_rank == 0)
+				cout << "check_success finished" << endl;*/
+
 		} while (opt->success == 0);
 
 		//repeat calculation of fitness value to find the best one in the population

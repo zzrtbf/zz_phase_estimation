@@ -1,4 +1,6 @@
+#include <iostream>
 #include "mpi_optalg.h"
+using namespace std;
 
 void DE::put_to_best() {
     for(int p = 0; p < this->pop_size; ++p) { //pop_size here is the number of candidates assigned for a processor from the initialization.
@@ -48,17 +50,21 @@ void DE::combination()
 	for (int i = 0; i < total_pop; i++)
 		all_soln[i] = new double[this->num];
 	int* fam = new int [fam_size];
-	double* input = new double [this->num];
+	double* input = new double[this->num];
 
+	MPI_Barrier(MPI_COMM_WORLD);
 	//get the solution from all processor to root ***POTENTIAL BOTTLENECK***
 	for (int p = 0; p < total_pop; ++p) {
 		if (p % nb_proc != 0) { //if candidate is not in root, send the solution to root.
 			if (my_rank == p % nb_proc) {
 				this->pop[int(p / nb_proc)].read_best(input);
-				MPI_Send(&input, this->num, MPI_DOUBLE, 0, tag, MPI_COMM_WORLD);
+				MPI_Send(&input[0], this->num, MPI_DOUBLE, 0, p, MPI_COMM_WORLD);
+				//cout << "process " << my_rank << " sent soln " << p << endl;
 			}
 			else if (my_rank == 0) {
-				MPI_Recv(&input, this->num, MPI_DOUBLE, p % nb_proc, tag, MPI_COMM_WORLD, &status);
+				MPI_Recv(&input[0], this->num, MPI_DOUBLE, p % nb_proc, p, MPI_COMM_WORLD, &status);
+				//cout << "process " << my_rank << " received soln " << p << " from process " << (p % nb_proc) << endl;
+				//cout << status.count << endl;
 				for (int i = 0; i < this->num; ++i) {
 					all_soln[p][i] = input[i];
 				}
@@ -66,6 +72,7 @@ void DE::combination()
 		}
 		else if (p % nb_proc == 0) { //if candidate is in root, read the solution into the memory
 			if (my_rank == 0) {
+				//cout << "process 0 deal with the soln " << p << endl;
 				this->pop[int(p / nb_proc)].read_best(input);
 				for (int i = 0; i < this->num; ++i) {
 					all_soln[p][i] = input[i];
@@ -149,3 +156,116 @@ void DE::family_gen(int* fam, int p, int fam_size) {
         while(fam[2] == p || fam[2] == fam[0] || fam[2] == fam[1]);
         }
     }
+
+//void DE::combination()
+//{
+//	/*! Combination() generates the next generation of candidates. First, all the candidate give their best array to the zeroth processor
+//	* who then generates the new candidate and send it back to the parent candidate. The parent store the new array into the contender
+//	* and compute the mean fitness value.
+//	*/
+//	MPI_Status status;
+//	int tag = 1;
+//	double coin;
+//	int fam_size = 3;
+//
+//	double** all_soln = new double* [total_pop]; // [this->num] ;
+//	for (int i = 0; i < total_pop; i++)
+//		all_soln[i] = new double[this->num];
+//	int* fam = new int[fam_size];
+//	double* input = new double[this->num];
+//
+//	MPI_Barrier(MPI_COMM_WORLD);
+//	//get the solution from all processor to root ***POTENTIAL BOTTLENECK***
+//	if (my_rank != 0)
+//	{
+//		for (int p = 0; p < total_pop; ++p)
+//		{
+//			if (p % nb_proc != 0)  //if candidate is not in root, send the solution to root.
+//			{
+//				if (my_rank == p % nb_proc)
+//				{
+//					this->pop[int(p / nb_proc)].read_best(input);
+//					MPI_Send(&input[0], this->num, MPI_DOUBLE, 0, p, MPI_COMM_WORLD);
+//					//cout << "process " << my_rank << " sent soln " << p << endl;
+//				}
+//			}
+//		}// p loop
+//	}
+//	MPI_Barrier(MPI_COMM_WORLD);
+//	if (my_rank == 0)
+//	{
+//		for (int p = 0; p < total_pop; p++)
+//		{
+//			if (p % nb_proc == 0)	//if candidate is in root, read the solution into the memory
+//			{ 
+//				//cout << "process 0 deal with the soln " << p << endl;
+//				this->pop[int(p / nb_proc)].read_best(input);
+//				for (int i = 0; i < this->num; ++i)
+//					all_soln[p][i] = input[i];
+//			}
+//			else
+//			{
+//				MPI_Recv(&input[0], this->num, MPI_DOUBLE, p % nb_proc, p, MPI_COMM_WORLD, &status);
+//				//cout << "process " << my_rank << " received soln " << p << " from process " << (p % nb_proc) << endl;
+//				for (int i = 0; i < this->num; ++i)
+//					all_soln[p][i] = input[i];
+//			}
+//		}
+//	}
+//	
+//	MPI_Barrier(MPI_COMM_WORLD);
+//
+//	//generate the new candidate
+//	for (int p = 0; p < total_pop; ++p) {
+//		if (my_rank == 0) {
+//			family_gen(fam, p, fam_size);
+//			//create donor
+//			for (int i = 0; i < this->num; ++i) {
+//				//create donor
+//				coin = double(rand()) / RAND_MAX;
+//				if (coin <= Cr || i == rand() % this->num) {
+//					input[i] = all_soln[fam[0]][i] + F * (all_soln[fam[1]][i] - all_soln[fam[2]][i]);
+//				}
+//				else {
+//					input[i] = all_soln[p][i];
+//				}
+//			}
+//			this->prob->boundary(input);
+//
+//		}//my_rank==0
+//
+//	//update of candidate
+//		if (p % nb_proc == 0) { // if p candidate is in root, update the candidate
+//			if (my_rank == 0) {
+//				this->pop[int(p / nb_proc)].update_cont(&input[0]);
+//			}
+//		}
+//		else { // if p candidate is not on root, send the new candidate from root to processor
+//			if (my_rank == 0) {
+//				MPI_Send(&input[0], this->num, MPI_DOUBLE, p % nb_proc, tag, MPI_COMM_WORLD);
+//			}
+//			else if (my_rank == p % nb_proc) { //processor that contains p candidate updates the candidate
+//				MPI_Recv(&input[0], this->num, MPI_DOUBLE, 0, tag, MPI_COMM_WORLD, &status);
+//				this->pop[int(p / nb_proc)].update_cont(&input[0]);
+//			}
+//			else {}
+//		}
+//
+//	}//p loop
+//
+//	MPI_Barrier(MPI_COMM_WORLD);
+//
+//	//all candidate calculate fitness of contender
+//	for (int p = 0; p < this->pop_size; ++p) {
+//		this->Cont_fitness(p);   //compute the fitness
+//	}
+//
+//	MPI_Barrier(MPI_COMM_WORLD);
+//
+//	for (int i = 0; i < total_pop; i++)
+//		delete[] all_soln[i];
+//	delete[] all_soln;
+//
+//	delete[] fam;
+//	delete[] input;
+//}

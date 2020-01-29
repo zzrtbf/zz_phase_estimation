@@ -1,4 +1,6 @@
+#include "iostream"
 #include "mpi_optalg.h"
+using namespace std;
 
 void PSO::read_param(double* param_array) {
 	param_array[0] = w;
