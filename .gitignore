@@ -27,6 +27,8 @@ bld/
 [Oo]bj/
 [Ll]og/
 phase_estimation/
+phase_estimation/x64
+/phase_estimation
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
