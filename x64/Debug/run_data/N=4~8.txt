@@ -1,0 +1,40 @@
+Beginning the optimization algorithm
+
+Start iterative optimization.  numvar: 4
+Iteration done
+The result of optimization:
+numvar: 4
+solution:  1.63896      0.72038 0.621136        0.42197
+fitarray:  0.587019     -2.24635
+
+
+Start iterative optimization.  numvar: 5
+Iteration done
+The result of optimization:
+numvar: 5
+solution:  1.61607      0.856237        0.529377        0.407111        0.323721
+fitarray:  0.61953      -2.26334
+
+
+Start iterative optimization.  numvar: 6
+Iteration done
+The result of optimization:
+numvar: 6
+solution:  1.44462      0.912371        0.723292        0.690591        0.4     0.4
+fitarray:  0.659717     -2.24095
+
+
+Start iterative optimization.  numvar: 7
+Iteration done
+The result of optimization:
+numvar: 7
+solution:  1.52427      0.894554        0.524622        0.377817        0.522991        0.381083    0.423762
+fitarray:  0.677369     -2.24338
+
+
+Start iterative optimization.  numvar: 8
+Iteration done
+The result of optimization:
+numvar: 8
+solution:  1.54355      0.89991 0.544233        0.403205        0.518916        0.384085        0.405702        0.185436
+fitarray:  0.707472     -2.22804
