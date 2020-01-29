@@ -28,7 +28,6 @@ bld/
 [Ll]og/
 
 # user defined
-phase_estimation.exe.lastcodeanalysissucceeded
 phase_estimation/
 
 # Visual Studio 2015/2017 cache/options directory
