@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
 	}
 
 	if (my_rank == 0) {
-		output_header(output_filename.c_str(), time_filename.c_str());
+		output_header(output_filename.c_str(), time_filename.c_str(), optimization.c_str());
 	}
 
 	numvar = N_begin;

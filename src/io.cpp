@@ -5,22 +5,30 @@
 #include <stdexcept>
 #include <map>
 #include <time.h>
+#include <ctime>
 
 using namespace std;
 
-void output_header( char const *output_filename, /*!<Pointer to output file where the sharpness will be printed.*/
-                    char const *time_filename /*!<Pointer to output file where the clock time for optimizing a policy.*/
+
+void output_header( char const *output_filename,    /*!<Pointer to output file where the sharpness will be printed.*/
+                    char const *time_filename,      /*!<Pointer to output file where the clock time for optimizing a policy.*/
+                    char const* optimization        // algorithm name
                   ) {
     ofstream output_file;
     ofstream time_file;
+    time_t ltm = time(0);
+    char c_ltm[26];
+    ctime_s(c_ltm, sizeof c_ltm, &ltm);
+    const char* p_ltm = c_ltm;
 
     output_file.open(output_filename, ios::app);
+    output_file << "New experiment\t" << optimization << "\t\t" << c_ltm;
     output_file << "#N\tSharpness\tMean\t\tPolicy" << endl;
     output_file.close();
     time_file.open(time_filename, ios::app);
     time_file << "#N\tTime" << endl;
     time_file.close();
-    }
+}
 
 void output_result( int num, /*!< Number of variables in a policy.*/
 		    int num_fit, /*!<number of fitness values*/
@@ -132,8 +140,8 @@ void read_config_file(  char const *filename, /*!< File that contains program pa
 	*iter_begin = 300;
 	*repeat = 10;
 	*seed = time(NULL);
-	*output_filename = "output.dat";
-	*time_filename = "time.dat";
+	*output_filename = "experimental_data/output.dat";
+	*time_filename = "experimental_data/time.dat";
 	*optimization = "de";
 
 	*data_end = 8;
@@ -205,3 +213,5 @@ void read_config_file(  char const *filename, /*!< File that contains program pa
         throw runtime_error("Select new N_cut");
         }
     }
+
+
