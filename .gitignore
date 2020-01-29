@@ -26,10 +26,10 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
-phase_estimation
+
+# user defined
+phase_estimation.exe.lastcodeanalysissucceeded
 phase_estimation/
-phase_estimation/x64/Debug
-/phase_estimation
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
